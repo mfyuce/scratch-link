@@ -21,6 +21,7 @@ namespace scratch_link
         {
             public const string BLE = "/scratch/ble";
             public const string BT = "/scratch/bt";
+            public const string ARDUINO = "/scratch/arduino";
         }
 
         private readonly NotifyIcon _icon;
@@ -53,7 +54,8 @@ namespace scratch_link
             _sessionManagers = new SortedDictionary<string, SessionManager>
             {
                 [SDMPath.BLE] = new SessionManager(webSocket => new BLESession(webSocket)),
-                [SDMPath.BT] = new SessionManager(webSocket => new BTSession(webSocket))
+                [SDMPath.BT] = new SessionManager(webSocket => new BTSession(webSocket)),
+                [SDMPath.ARDUINO] = new SessionManager(webSocket => new ArduinoSession(webSocket))
             };
 
             var certificate = new X509Certificate2(scratch_link.Properties.Resources.WssCertificate, "Scratch");
