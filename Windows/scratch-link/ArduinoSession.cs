@@ -6,6 +6,7 @@ using System.IO.Ports;
 using System.Management;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Threading;
 
 namespace scratch_link
 {
@@ -13,6 +14,8 @@ namespace scratch_link
     {
         private Dictionary<string, dynamic> listOfDevices =
                                 new Dictionary<string, dynamic>();
+        private Dictionary<string, SerialPort> serialPorts =
+                                new Dictionary<string, SerialPort>();
         public ArduinoSession(IWebSocketConnection webSocket, int bufferSize = 4096, int maxMessageSize = 1048576) : base(webSocket, bufferSize, maxMessageSize)
         {
         }
@@ -82,6 +85,83 @@ namespace scratch_link
                 }
             });
         }
+        private void Write(string pin, string value)
+        {
+            SerialPort _serialPort = null;
+            var port = listOfDevices.Keys.First();
+            if (!serialPorts.ContainsKey(port))
+            {
+                _serialPort = serialPorts[port] = new SerialPort();
+                _serialPort.PortName = port;
+                _serialPort.BaudRate = 115200;
+                _serialPort.WriteBufferSize = 2;
+                _serialPort.WriteTimeout = 2000;
+                _serialPort.Handshake = Handshake.None;
+                _serialPort.DtrEnable = true;
+                _serialPort.RtsEnable = true;
+                _serialPort.Open();
+            }
+            else
+            {
+                _serialPort = serialPorts[port];
+            }
+            try
+            {
+                if (!_serialPort.IsOpen)
+                {
+                    try
+                    {
+                        _serialPort.Open();
+                        Thread.Sleep(1000);
+                    }
+                    catch
+                    {
+                        _serialPort.Close();
+                        _serialPort.Open();
+                    }
+                }
+                _serialPort.Write(value);
+                Thread.Sleep(2000);
+                _serialPort.BaseStream.Flush();
+                Thread.Sleep(2000);
+                Console.WriteLine(value);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+        string codeToCompile = @"
+const int led = {0};
+ int state=0;  
+void setup()   
+{{   
+    Serial.begin(115200); //Starts the serial connection with 115200 Buad Rate   
+    pinMode(led, OUTPUT); //Sets led pin as an output
+}}
+
+void loop()
+{{
+    String data = Serial.readString();//Read the serial buffer as a string
+
+    if (data==""0"")//checks if it is ""ON""
+    {{
+        digitalWrite(led, HIGH); // Sets the led ON   
+        state = 0;// Sets the state value to 0
+    }}
+    else if (data==""1"")//checks if it is ""OFF""
+    {{
+        digitalWrite(led, LOW); //Sets the led OFF   
+        state = 0;// Sets the state value to 1
+    }}
+    else if (data.indexOf(""STATE"") != -1)//checks if it is ""STATE""
+    {{
+        Serial.write(""state="");//Sends the state
+        Serial.println(state);
+    }}
+}}
+";
+
         protected override async Task DidReceiveCall(string method, JObject parameters, Func<JToken, JsonRpcException, Task> completion)
         {
             switch (method)
@@ -94,6 +174,8 @@ namespace scratch_link
                     await completion(null, null);
                     break;
                 case "write":
+                    var msg = parameters["message"];
+                    Write(msg["pin"].ToString(), msg["value"].ToString());
                     await completion(null, null);
                     break;
                 case "read":
@@ -103,6 +185,12 @@ namespace scratch_link
                     await completion(null, null);
                     break;
                 case "stopNotifications":
+                    await completion(null, null);
+                    break;
+                case "upload":
+                    await completion(null, null);
+                    break;
+                case "compile":
                     await completion(null, null);
                     break;
                 case "getServices":
