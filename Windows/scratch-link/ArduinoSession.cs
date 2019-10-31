@@ -32,6 +32,7 @@ namespace scratch_link
                     try
                     {
                         // get only devices that are working properly."
+                        // TODO: osquery?
                         string query = "SELECT * FROM Win32_PnPEntity WHERE ConfigManagerErrorCode = 0 AND NAME LIKE '%(" + portName + "%'";// get only devices that are working properly."
                         ManagementObjectSearcher searcher = new ManagementObjectSearcher(query);
                         listObj = searcher.Get().Cast<ManagementObject>().ToList();
@@ -152,7 +153,7 @@ void loop()
     else if (data==""1"")//checks if it is ""OFF""
     {{
         digitalWrite(led, LOW); //Sets the led OFF   
-        state = 0;// Sets the state value to 1
+        state = 1;// Sets the state value to 1
     }}
     else if (data.indexOf(""STATE"") != -1)//checks if it is ""STATE""
     {{
@@ -228,34 +229,5 @@ void loop()
             return base.ToString();
         }
     }
-
-    internal class Win32_PnPEntity
-    {
-        UInt16 Availability;
-        string Caption;
-        string ClassGuid;
-        string[] CompatibleID;
-        UInt32 ConfigManagerErrorCode;
-        bool ConfigManagerUserConfig;
-        string CreationClassName;
-        string Description;
-        string DeviceID;
-        bool ErrorCleared;
-        string ErrorDescription;
-        string[] HardwareID;
-        DateTime InstallDate;
-        UInt32 LastErrorCode;
-        string Manufacturer;
-        string Name;
-        string PNPClass;
-        string PNPDeviceID;
-        UInt16[] PowerManagementCapabilities;
-        bool PowerManagementSupported;
-        bool Present;
-        string Service;
-        string Status;
-        UInt16 StatusInfo;
-        string SystemCreationClassName;
-        string SystemName;
-    }
+    
 }
