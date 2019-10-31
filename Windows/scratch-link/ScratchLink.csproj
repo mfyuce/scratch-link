@@ -73,7 +73,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ArduinoSession.cs" />
+    <Compile Include="Arduino\ArduinoSession.cs" />
+    <Compile Include="Arduino\ControllerTemplateExtensions.cs" />
     <Compile Include="AssemblyExtensions.cs" />
     <Compile Include="BLESession.cs" />
     <Compile Include="EncodingHelpers.cs" />
@@ -121,6 +122,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\NotifyIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Arduino\Arduino.csproj">
+      <Project>{70041932-fac7-40e2-8212-f815191068b0}</Project>
+      <Name>Arduino</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\scratchVersion.targets" />

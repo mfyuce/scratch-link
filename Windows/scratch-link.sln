@@ -28,6 +28,10 @@ Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "ScratchLinkAPPX", "ScratchL
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "ScratchLinkSetup", "ScratchLinkSetup\ScratchLinkSetup.wixproj", "{5AC1AA26-9C7C-4A81-99B7-21222DA0D89E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arduino", "Arduino\Arduino.csproj", "{70041932-FAC7-40E2-8212-F815191068B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArduinoTests", "ArduinoTests\ArduinoTests.csproj", "{2DBFDE3D-4199-4227-8977-195047116875}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{5AC1AA26-9C7C-4A81-99B7-21222DA0D89E}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{5AC1AA26-9C7C-4A81-99B7-21222DA0D89E}.Release|Any CPU.ActiveCfg = Release|x86
 		{5AC1AA26-9C7C-4A81-99B7-21222DA0D89E}.Release|Any CPU.Build.0 = Release|x86
+		{70041932-FAC7-40E2-8212-F815191068B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70041932-FAC7-40E2-8212-F815191068B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70041932-FAC7-40E2-8212-F815191068B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70041932-FAC7-40E2-8212-F815191068B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DBFDE3D-4199-4227-8977-195047116875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DBFDE3D-4199-4227-8977-195047116875}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DBFDE3D-4199-4227-8977-195047116875}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DBFDE3D-4199-4227-8977-195047116875}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
