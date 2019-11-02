@@ -74,7 +74,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Arduino\ArduinoSession.cs" />
-    <Compile Include="Arduino\ControllerTemplateExtensions.cs" />
     <Compile Include="AssemblyExtensions.cs" />
     <Compile Include="BLESession.cs" />
     <Compile Include="EncodingHelpers.cs" />
