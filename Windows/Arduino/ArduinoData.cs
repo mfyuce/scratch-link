@@ -37,18 +37,25 @@ namespace Arduino
             get {
                 if (_default == null)
                 {
-                    _default = new ArduinoData();
-                    System.Collections.IList list = Enum.GetValues(typeof(ArduinoPin));
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        ArduinoPin pin = (ArduinoPin)list[i];
-                        _default.PinMode.Add(pin, ArduinoPinMode.OUTPUT);
-                        _default.PinState.Add(pin, false);
-                    }
+                    _default = CreateEmtptyArduinoState();
                 }
                 return _default;
             }
         }
+
+        public static ArduinoData CreateEmtptyArduinoState()
+        {
+            var _default = new ArduinoData();
+            System.Collections.IList list = Enum.GetValues(typeof(ArduinoPin));
+            for (int i = 0; i < list.Count; i++)
+            {
+                ArduinoPin pin = (ArduinoPin)list[i];
+                _default.PinMode.Add(pin, ArduinoPinMode.OUTPUT);
+                _default.PinState.Add(pin, false);
+            }
+            return _default;
+        }
+
         public ArduinoData()
         {
         }

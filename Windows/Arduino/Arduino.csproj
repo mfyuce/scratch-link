@@ -31,18 +31,23 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArduinoData.cs" />
     <Compile Include="ArduinoManager.cs" />
+    <Compile Include="Simulator\ArduinoSimulator.cs" />
     <Compile Include="ControllerTemplate.cs">
       <DependentUpon>ControllerTemplate.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -50,6 +55,8 @@
     </Compile>
     <Compile Include="ControllerTemplateExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Simulator\GridHelpers.cs" />
+    <Compile Include="Simulator\Serial.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="tools\avr-gcc-9.2.0-x64-mingw\avr\bin\ar.exe" />

@@ -7,11 +7,20 @@ using System.Management;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
+using Arduino;
+using Arduino.Simulator;
 
 namespace scratch_link
 {
     internal class ArduinoSession : Session
     {
+        bool connectedToSimulator = false;
+        static ArduinoSession()
+        {
+            //sim = new ArduinoPortSimulator();
+            //sim.Start();
+        }
+        static ArduinoPortSimulator sim = null;
         private Dictionary<string, dynamic> listOfDevices =
                                 new Dictionary<string, dynamic>();
         private Dictionary<string, SerialPort> serialPorts =
@@ -23,6 +32,14 @@ namespace scratch_link
         {
             await Task.Run(() =>
             {
+                var peripheralData = new JObject
+                        {
+                            new JProperty("name", new JValue("Pinoo Simulator")),
+                            new JProperty("rssi", null),
+                            new JProperty("peripheralId", new JValue("0"))
+                        };
+                SendRemoteRequest("didDiscoverPeripheral", peripheralData);
+
                 string[] portNames = SerialPort.GetPortNames();// Get real serial ports
                 foreach (string portName in portNames)
                 {
@@ -75,7 +92,7 @@ namespace scratch_link
                         System.Console.WriteLine(obj["SystemName"]);
                         object captionObj = obj["Caption"]; //This will get you the friendly name.
                         this.listOfDevices.Add(portName, obj);
-                        var peripheralData = new JObject
+                        peripheralData = new JObject
                         {
                             new JProperty("name", new JValue(captionObj)),
                             new JProperty("rssi", null),
@@ -99,6 +116,7 @@ namespace scratch_link
                 _serialPort.BaudRate = 115200;
                 _serialPort.WriteBufferSize = 2;
                 _serialPort.WriteTimeout = 2000;
+                _serialPort.ReadTimeout = 2000;
                 _serialPort.Handshake = Handshake.None;
                 _serialPort.DtrEnable = true;
                 _serialPort.RtsEnable = true;
@@ -135,21 +153,42 @@ namespace scratch_link
             return ret;
         }
         private void Write(string pin, string value)
-        { 
-            PortOp((port) =>
+        {
+            string text = pin + (String.IsNullOrWhiteSpace(value)?"":":" + value);
+            if (connectedToSimulator)
             {
-                port.Write(pin + ":" + value);
-                return "";
-            }); 
+                Serial.printlnFromOtherSide(text);
+            }
+            else
+            {
+                PortOp((port) =>
+                {
+                    port.Write(text);
+                    return "";
+                });
+            }
         }
 
         private String Read(string pin)
-        { 
-            return PortOp((port) =>
+        {
+            if (connectedToSimulator)
             {
-                port.Write(pin);
-                return port.ReadLine();
-            });
+                return Serial.readStringFromOtherSide();
+            }
+            else
+            {
+                return PortOp((port) =>
+                {
+                    byte[] toRead = new Byte[100];
+                    int numRead =  port.Read(toRead,0,100);
+                    if (numRead > 0)
+                    {
+
+                        return System.Text.Encoding.ASCII.GetString(toRead).TrimEnd("\0\r\n".ToCharArray());
+                    }
+                    return null;
+                });
+            }
         }
         protected override async Task DidReceiveCall(string method, JObject parameters, Func<JToken, JsonRpcException, Task> completion)
         {
@@ -163,11 +202,43 @@ namespace scratch_link
                     await completion(null, null);
                     break;
                 case "connect":
+                    //connectedToSimulator = true;
                     await completion(null, null);
                     break;
                 case "write":
-                    Write(msg["pin"].ToString(), msg["value"].ToString());
-                    await completion(null, null);
+                    JToken value = msg["value"];
+                    JToken jcommand = msg["command"];
+                    Write(msg["pin"].ToString(), value==null?null:value.ToString());
+                    if (jcommand != null)
+                    {
+                        String command = jcommand.ToString();
+                        if (!String.IsNullOrWhiteSpace(command))
+                        {
+                            if (command == "digital_read")
+                            {
+                                await completion(new JValue(Read(msg["pin"].ToString())), null);
+                            }
+                            else
+                            {
+                                if (command == "set_pin_mode")
+                                {
+                                    await completion(new JValue(Read(msg["pin"].ToString())), null);
+                                }
+                                else
+                                {
+                                    await completion(null, null);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            await completion(null, null);
+                        }
+                    }
+                    else
+                    {
+                        await completion(null, null);
+                    }
                     break;
                 case "read":
                     await completion(new JValue(Read(msg["pin"].ToString())), null);
