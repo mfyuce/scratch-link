@@ -12,7 +12,7 @@ namespace Arduino.Simulator
         private const int WAIT_TIME = 100;
         static List<String> lstInput = new List<string>();
         static List<String> lstOutput = new List<string>();
-        static object objLock = new object();
+        private static object objLock = new object();
         internal static void begin(int v)
         {
             
@@ -23,10 +23,7 @@ namespace Arduino.Simulator
             return _readString(lstInput);
         }
 
-        public static string readStringFromOtherSide()
-        {
-            return _readString(lstOutput);
-        }
+        public static string readStringFromOtherSide() => _readString(lstOutput);
         public static void printlnFromOtherSide(String data)
         {
             lstInput.Add(data);
@@ -57,9 +54,6 @@ namespace Arduino.Simulator
         {
             lstOutput.Add(data);
         }
-        public static void println(int data)
-        {
-            lstOutput.Add(data + "");
-        }
+        public static void println(int data) => lstOutput.Add(data + "");
     }
 }

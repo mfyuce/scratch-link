@@ -601,9 +601,8 @@ namespace scratch_link
         {
             var filterObject = (JObject)dataFilter;
 
-            JToken token;
 
-            if (filterObject.TryGetValue("dataPrefix", out token))
+            if (filterObject.TryGetValue("dataPrefix", out JToken token))
             {
                 dataPrefix = token.ToObject<List<byte>>();
             }
@@ -665,9 +664,8 @@ namespace scratch_link
         {
             var filterObject = (JObject)filter;
 
-            JToken token;
 
-            if (filterObject.TryGetValue("name", out token))
+            if (filterObject.TryGetValue("name", out JToken token))
             {
                 Name = token.ToString();
             }

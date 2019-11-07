@@ -7,3 +7,5 @@
 .idea/
 .vscode/
 [._]DS_Store
+/Windows/Arduino/tools/arduino-cli/sketches/dev_mode/dev_mode.arduino.avr.uno.elf
+/Windows/Arduino/tools/arduino-cli/sketches/dev_mode/dev_mode.arduino.avr.uno.hex
