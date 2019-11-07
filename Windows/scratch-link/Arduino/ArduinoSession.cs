@@ -9,12 +9,18 @@ using System.Linq;
 using System.Threading;
 using Arduino;
 using Arduino.Simulator;
+using NppArduino.Domain;
 
 namespace scratch_link
 {
     internal class ArduinoSession : Session
     {
+        public static string DEFAULT_ARDUINO_FQBN = "arduino:avr:uno";
+        public static string SKETCH_FOLDER =ArduinoCLI_API.ARDUINO_CLI_PATH + "sketches/";
+        public static string DEV_MODE_SKETCH_FOLDER = SKETCH_FOLDER + "dev_mode/";
         bool connectedToSimulator = false;
+        string connectedPort = null;
+        private Dictionary<string, string> listOfDeviceIdsAndPorts = new Dictionary<string, string>();
         static ArduinoSession()
         {
             //sim = new ArduinoPortSimulator();
@@ -25,11 +31,13 @@ namespace scratch_link
                                 new Dictionary<string, dynamic>();
         private Dictionary<string, SerialPort> serialPorts =
                                 new Dictionary<string, SerialPort>();
+
         public ArduinoSession(IWebSocketConnection webSocket, int bufferSize = 4096, int maxMessageSize = 1048576) : base(webSocket, bufferSize, maxMessageSize)
         {
         }
         private async void GetListOfDevices()
         {
+            listOfDeviceIdsAndPorts.Clear();
             await Task.Run(() =>
             {
                 var peripheralData = new JObject
@@ -38,6 +46,7 @@ namespace scratch_link
                             new JProperty("rssi", null),
                             new JProperty("peripheralId", new JValue("0"))
                         };
+                listOfDeviceIdsAndPorts["0"] = "Pinoo Simulator";
                 SendRemoteRequest("didDiscoverPeripheral", peripheralData);
 
                 string[] portNames = SerialPort.GetPortNames();// Get real serial ports
@@ -98,6 +107,7 @@ namespace scratch_link
                             new JProperty("rssi", null),
                             new JProperty("peripheralId", new JValue(deviceID))
                         };
+                        listOfDeviceIdsAndPorts[deviceID] = portName;
                         SendRemoteRequest("didDiscoverPeripheral", peripheralData);
                     }
                 }
@@ -114,7 +124,7 @@ namespace scratch_link
                 _serialPort = serialPorts[port] = new SerialPort();
                 _serialPort.PortName = port;
                 _serialPort.BaudRate = 115200;
-                _serialPort.WriteBufferSize = 2;
+                _serialPort.WriteBufferSize = 2000;
                 _serialPort.WriteTimeout = 2000;
                 _serialPort.ReadTimeout = 2000;
                 _serialPort.Handshake = Handshake.None;
@@ -133,7 +143,7 @@ namespace scratch_link
                     try
                     {
                         _serialPort.Open();
-                        Thread.Sleep(1000);
+                        Thread.Sleep(100);
                     }
                     catch
                     {
@@ -143,7 +153,8 @@ namespace scratch_link
                 }
 
                 ret = cmd(_serialPort);
-                Thread.Sleep(2000);
+                Thread.Sleep(100);
+
                 _serialPort.BaseStream.Flush();
             }
             catch (Exception e)
@@ -190,10 +201,11 @@ namespace scratch_link
                 });
             }
         }
+
+        
         protected override async Task DidReceiveCall(string method, JObject parameters, Func<JToken, JsonRpcException, Task> completion)
         {
-            JToken msg = null;
-            parameters.TryGetValue("message", out msg);
+            parameters.TryGetValue("message", out JToken msg);
 
             switch (method)
             {
@@ -203,36 +215,46 @@ namespace scratch_link
                     break;
                 case "connect":
                     //connectedToSimulator = true;
+                    connectedPort = listOfDeviceIdsAndPorts[parameters["peripheralId"].ToString()];
                     await completion(null, null);
                     break;
                 case "write":
                     JToken value = msg["value"];
                     JToken jcommand = msg["command"];
-                    Write(msg["pin"].ToString(), value==null?null:value.ToString());
                     if (jcommand != null)
                     {
                         String command = jcommand.ToString();
-                        if (!String.IsNullOrWhiteSpace(command))
+                        if (command == "upload_dev_mode")
                         {
-                            if (command == "digital_read")
+                            var ret = ArduinoCLI_API.CompileSketch(DEFAULT_ARDUINO_FQBN, DEV_MODE_SKETCH_FOLDER, null);
+                            ret += "\r\n\r\n" + ArduinoCLI_API.UploadSketch(connectedPort, DEFAULT_ARDUINO_FQBN, DEV_MODE_SKETCH_FOLDER, null);
+                            await completion(new JValue(ret), null);
+                        }
+                        else
+                        {
+                            Write(msg["pin"].ToString(), value?.ToString());
+                            if (!String.IsNullOrWhiteSpace(command))
                             {
-                                await completion(new JValue(Read(msg["pin"].ToString())), null);
-                            }
-                            else
-                            {
-                                if (command == "set_pin_mode")
+                                if (command == "digital_read")
                                 {
                                     await completion(new JValue(Read(msg["pin"].ToString())), null);
                                 }
                                 else
                                 {
-                                    await completion(null, null);
+                                    if (command == "set_pin_mode")
+                                    {
+                                        await completion(new JValue(Read(msg["pin"].ToString())), null);
+                                    }
+                                    else
+                                    {
+                                        await completion(null, null);
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            await completion(null, null);
+                            else
+                            {
+                                await completion(null, null);
+                            }
                         }
                     }
                     else

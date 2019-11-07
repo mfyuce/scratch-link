@@ -42,7 +42,7 @@ namespace scratch_link
         /// <summary>
         /// PIN code for auto-pairing
         /// </summary>
-        private string _autoPairingCode = "0000";
+        private readonly string _autoPairingCode = "0000";
 
         private DeviceWatcher _watcher;
         private StreamSocket _connectedSocket;

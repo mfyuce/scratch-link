@@ -37,14 +37,20 @@ namespace Arduino
         int state12 = 0;
         const int pin12 = 12;
         int state13 = 0;
+#pragma warning disable IDE0044 // Add readonly modifier
         private int OUTPUT = 0;
+#pragma warning restore IDE0044 // Add readonly modifier
+#pragma warning disable IDE0044 // Add readonly modifier
         private int INPUT = 1;
+#pragma warning restore IDE0044 // Add readonly modifier
         const int pin13 = 13;
 
         public bool LOW = false;
         public bool HIGH = true;
         readonly ArduinoData state = ArduinoData.CreateEmtptyArduinoState();
+#pragma warning disable IDE1006 // Naming Styles
         void setup()
+#pragma warning restore IDE1006 // Naming Styles
         {
             Serial.begin(115200); //Starts the serial connection with 115200 Buad Rate
             pinMode(pin0, OUTPUT);
@@ -64,7 +70,9 @@ namespace Arduino
 
         }
 
+#pragma warning disable IDE1006 // Naming Styles
         private void pinMode(int pin0, int mod)
+#pragma warning restore IDE1006 // Naming Styles
         {
             state.PinMode[(ArduinoPin)pin0] = (ArduinoPinMode)mod;
         }
@@ -79,7 +87,9 @@ namespace Arduino
                 }
             });
         }
+#pragma warning disable IDE1006 // Naming Styles
         void loop()
+#pragma warning restore IDE1006 // Naming Styles
         {
            
             String data = Serial.readString();//Read the serial buffer as a string
@@ -281,7 +291,9 @@ namespace Arduino
             }
         }
 
+#pragma warning disable IDE1006 // Naming Styles
         private void digitalWrite(int pin0, bool _state)
+#pragma warning restore IDE1006 // Naming Styles
         {
             state.PinState[(ArduinoPin)pin0] = _state;
             Console.WriteLine(pin0 + ":" + _state);
