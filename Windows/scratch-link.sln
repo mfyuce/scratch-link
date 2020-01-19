@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arduino", "Arduino\Arduino.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArduinoTests", "ArduinoTests\ArduinoTests.csproj", "{2DBFDE3D-4199-4227-8977-195047116875}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scratch-schema", "..\scratch-schema\scratch-schema.csproj", "{20D2626D-83A8-4F22-A23D-250C338FED31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{2DBFDE3D-4199-4227-8977-195047116875}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DBFDE3D-4199-4227-8977-195047116875}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DBFDE3D-4199-4227-8977-195047116875}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20D2626D-83A8-4F22-A23D-250C338FED31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20D2626D-83A8-4F22-A23D-250C338FED31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20D2626D-83A8-4F22-A23D-250C338FED31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20D2626D-83A8-4F22-A23D-250C338FED31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
