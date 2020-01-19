@@ -23,8 +23,8 @@ namespace scratch_link
         private Dictionary<string, string> listOfDeviceIdsAndPorts = new Dictionary<string, string>();
         static ArduinoSession()
         {
-            //sim = new ArduinoPortSimulator();
-            //sim.Start();
+            sim = new ArduinoPortSimulator();
+            sim.Start();
         }
         static ArduinoPortSimulator sim = null;
         private Dictionary<string, dynamic> listOfDevices =
@@ -221,11 +221,17 @@ namespace scratch_link
                 case "write":
                     JToken value = msg["value"];
                     JToken jcommand = msg["command"];
+
                     if (jcommand != null)
                     {
                         String command = jcommand.ToString();
                         if (command == "upload_dev_mode")
                         {
+                            //var data = msg["data"];
+                            //var blockList = data["blocks"].Children();
+                            //var startingBlockName = (string)data["startingBlock"];
+                            //dynamic startingBlock = findBlock(blockList, startingBlockName);
+
                             var ret = ArduinoCLI_API.CompileSketch(DEFAULT_ARDUINO_FQBN, DEV_MODE_SKETCH_FOLDER, null);
                             ret += "\r\n\r\n" + ArduinoCLI_API.UploadSketch(connectedPort, DEFAULT_ARDUINO_FQBN, DEV_MODE_SKETCH_FOLDER, null);
                             await completion(new JValue(ret), null);
