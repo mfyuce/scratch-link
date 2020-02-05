@@ -93,6 +93,9 @@
     <None Include="tools\arduino-cli\sketches\dev_mode\dev_mode.ino">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="tools\schema\sb3_definitions.json" />
+    <None Include="tools\schema\sb3_schema.json" />
+    <None Include="tools\schema\sprite3_schema.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

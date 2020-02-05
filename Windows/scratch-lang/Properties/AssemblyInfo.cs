@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("scratch-schema")]
+[assembly: AssemblyTitle("scratch-lang")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("scratch-schema")]
+[assembly: AssemblyProduct("scratch-lang")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("20d2626d-83a8-4f22-a23d-250c338fed31")]
+[assembly: Guid("5fd2c82e-724a-4968-8e10-a5e5eb305376")]
 
 // Version information for an assembly consists of the following four values:
 //
