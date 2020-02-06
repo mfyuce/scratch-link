@@ -15,12 +15,13 @@ namespace ArduinoTests
             var blockList = JObject.Parse(sampleProjBlocks).Children();
 
             
-            var tree = ASTree.traverse(blockList, "~s0z32=`}v`1T#eFE={I");
+            var tree = ASTree.Traverse(blockList, "~s0z32=`}v`1T#eFE={I");
             Console.WriteLine(tree.ToString());
+            Console.WriteLine(tree.AsCode(0));
             Assert.IsTrue(tree != null);
         }
 
-        private static String sampleProjBlocks = @"{
+        private static readonly String sampleProjBlocks = @"{
   "",{dtN2oNc8Y;c-*}N|(3"": {
     ""opcode"": ""operator_equals"",
     ""next"": null,
