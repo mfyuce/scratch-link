@@ -34,7 +34,7 @@ namespace ArduinoTests
 
             Assert.IsTrue(o1!=null);
         }
-        private static String sampleProj = @"
+        private static readonly String sampleProj = @"
 {
   ""targets"": [
     {
