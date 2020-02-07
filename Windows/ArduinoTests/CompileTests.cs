@@ -13,7 +13,6 @@ namespace ArduinoTests
         public void TestMethod1()
         {
             var blockList = JObject.Parse(sampleProjBlocks).Children();
-
             
             var tree = ASTree.Traverse(blockList, "~s0z32=`}v`1T#eFE={I");
             Console.WriteLine(tree.ToString());
