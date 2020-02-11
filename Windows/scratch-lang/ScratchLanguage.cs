@@ -81,29 +81,28 @@ namespace scratch_lang
         {
              
         }
-        public OpcodeParseInfo(Type typeIfo, string[] childInfo, string codeConversion) :this(typeIfo, childInfo, -1,-1, codeConversion)
+        public OpcodeParseInfo(Type typeIfo, string[] childInfo, string codeConversion) :this(typeIfo, childInfo, -1,-1)
         {
              
         }
-        public OpcodeParseInfo(string[] childInfo, string codeConversion) :this(typeof(ASTreeNode), childInfo, -1,-1, codeConversion)
+        public OpcodeParseInfo(string[] childInfo, string codeConversion) :this(typeof(ASTreeNode), childInfo, -1,-1)
         {
              
         }
-        public OpcodeParseInfo(Type typeIfo, string[] childInfo, int childrenStartFrom  ): this(typeIfo, childInfo, childrenStartFrom, -1, null)
+        public OpcodeParseInfo(Type typeIfo, string[] childInfo, int childrenStartFrom  ): this(typeIfo, childInfo, childrenStartFrom, -1)
         {
         }
-        public OpcodeParseInfo(string[] childInfo, int childrenStartFrom  ): this(typeof(ASTreeNode), childInfo, childrenStartFrom, -1, null)
+        public OpcodeParseInfo(string[] childInfo, int childrenStartFrom  ): this(typeof(ASTreeNode), childInfo, childrenStartFrom, -1)
         {
         }
-        public OpcodeParseInfo(Type typeIfo, string[] childInfo, int childrenStartFrom, int childrenEndAt,string codeConversion)
+        public OpcodeParseInfo(Type typeIfo, string[] childInfo, int childrenStartFrom, int childrenEndAt)
         {
             this.TypeIfo = typeIfo;
             this.ChildInfo = childInfo;
             this.ChildrenEndAt = childrenEndAt;
             this.ChildrenStartFrom = childrenStartFrom;
-            this.DefaultCodeConversion = codeConversion;
         }
-        public OpcodeParseInfo( string[] childInfo, int childrenStartFrom, int childrenEndAt, string codeConversion): this(typeof(ASTreeNode), childInfo, childrenStartFrom, childrenEndAt, codeConversion)
+        public OpcodeParseInfo( string[] childInfo, int childrenStartFrom, int childrenEndAt, string codeConversion): this(typeof(ASTreeNode), childInfo, childrenStartFrom, childrenEndAt)
         {
            
         }
@@ -111,7 +110,79 @@ namespace scratch_lang
         public string[] ChildInfo { get; set; }
         public int ChildrenStartFrom { get; set; }
         public int ChildrenEndAt { get; set; }
-        public string DefaultCodeConversion { get; set; }
+    }
+    public static class CodeConversion
+    {
+        public static Dictionary<string, string> Default { get; set; } =
+                new Dictionary<string, string> {
+            {"data_setvariableto", "\n{indentation}{child0}={child1}" },
+            {"data_changevariableby" , "\n{indentation}{child0}+={child1}" },
+            {"control_repeat", "\n{indentation}Repeat {child0}\n{next_indentation}{children}" },
+            {"control_repeat_until",  "\n{indentation}Repeat\n{next_indentation}{children}\n{indentation}Until {child0}" },
+            {"control_wait",  "\n{indentation}Wait {child0}" },
+            {"control_wait_until",  "\n{indentation}Wait Until {child0}" },
+            {"control_forever",  "\n{indentation}Forever {children}" },
+            {"control_if_else",  "\n{indentation}if {child0}\n{next_indentation}{child1}\n{indentation}else\n{next_indentation}{child2}" },
+            {"control_if", "\n{indentation}if {child0}\n{next_indentation}{child1}" },
+            {"operator_equals", "(({child0})==({child1}))" },
+            {"operator_random",  "Random(({child0}),({child1}))" },
+            {"operator_subtract", "(({child0})-({child1}))" },
+            {"operator_add", "(({child0})+({child1}))" },
+            {"operator_join",  "(({child0})+({child1}))" },
+            {"operator_contains", "(({child0}).contains({child1}))" },
+            {"operator_letter_of", "(({child0})[({child1})])" },
+            {"operator_length",  "(len({child0}))" },
+            {"operator_multiply",  "(({child0})*({child1}))" },
+            {"operator_divide",  "(({child0})/({child1}))" },
+            {"operator_or",  "(({child0})|({child1}))" },
+            {"operator_gt", "(({child0})>({child1}))" },
+            {"operator_lt", "(({child0})<({child1}))" },
+            {"operator_and",  "(({child0})&({child1}))" },
+            {"operator_mod",  "(({child0})%({child1}))" },
+            {"operator_round", "(Round({child0}))" },
+            {"operator_mathop",  "({child0}({child1}))" },
+            {"operator_not",  "!({child0}))" },
+            {"data_variable",  "({child0})" },
+            {"text", "({child0})" },
+            {"math_whole_number",  "({child0})" },
+            {"math_number",  "({child0})" },
+            {"default",  "({children})" }
+                };
+        public static Dictionary<string, string> Arduino { get; set; } =
+                new Dictionary<string, string> {
+            {"data_setvariableto", "\n{indentation}{child0}={child1}" },
+            {"data_changevariableby" , "\n{indentation}{child0}+={child1}" },
+            {"control_repeat", "\n{indentation}Repeat {child0}\n{next_indentation}{children}" },
+            {"control_repeat_until",  "\n{indentation}Repeat\n{next_indentation}{children}\n{indentation}Until {child0}" },
+            {"control_wait",  "\n{indentation}Wait {child0}" },
+            {"control_wait_until",  "\n{indentation}Wait Until {child0}" },
+            {"control_forever",  "\n{indentation}Forever {children}" },
+            {"control_if_else",  "\n{indentation}if {child0}\n{next_indentation}{child1}\n{indentation}else\n{next_indentation}{child2}" },
+            {"control_if", "\n{indentation}if {child0}\n{next_indentation}{child1}" },
+            {"operator_equals", "(({child0})==({child1}))" },
+            {"operator_random",  "Random(({child0}),({child1}))" },
+            {"operator_subtract", "(({child0})-({child1}))" },
+            {"operator_add", "(({child0})+({child1}))" },
+            {"operator_join",  "(({child0})+({child1}))" },
+            {"operator_contains", "(({child0}).contains({child1}))" },
+            {"operator_letter_of", "(({child0})[({child1})])" },
+            {"operator_length",  "(len({child0}))" },
+            {"operator_multiply",  "(({child0})*({child1}))" },
+            {"operator_divide",  "(({child0})/({child1}))" },
+            {"operator_or",  "(({child0})|({child1}))" },
+            {"operator_gt", "(({child0})>({child1}))" },
+            {"operator_lt", "(({child0})<({child1}))" },
+            {"operator_and",  "(({child0})&({child1}))" },
+            {"operator_mod",  "(({child0})%({child1}))" },
+            {"operator_round", "(Round({child0}))" },
+            {"operator_mathop",  "({child0}({child1}))" },
+            {"operator_not",  "!({child0}))" },
+            {"data_variable",  "({child0})" },
+            {"text", "({child0})" },
+            {"math_whole_number",  "({child0})" },
+            {"math_number",  "({child0})" },
+            {"default",  "({children})" }
+                };
     }
     public class ASTreeNode
     {
@@ -252,7 +323,7 @@ namespace scratch_lang
             {
                 var info = opcodeToType[opcode];
 
-                var conversion = info.DefaultCodeConversion;
+                var conversion = CodeConversion.Default[opcode];
                 var thisCode = conversion.Replace("{child0}", parentNode.Children[0].AsCode(nextIndentation));
                 if (parentNode.Children.Count > 1)
                 {
