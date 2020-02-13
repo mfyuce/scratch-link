@@ -16,7 +16,7 @@ namespace ArduinoTests
             
             var tree = ASTree.Traverse(blockList, "~s0z32=`}v`1T#eFE={I");
             Console.WriteLine(tree.ToString());
-            Console.WriteLine(tree.AsCode(0));
+            Console.WriteLine(tree.AsCode(0, CodeConversion.ARDUINO_PLATFORM));
             Assert.IsTrue(tree != null);
         }
 
