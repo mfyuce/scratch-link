@@ -73,6 +73,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Arduino\ArduinoSimulatorSession.cs" />
     <Compile Include="Arduino\ArduinoSession.cs" />
     <Compile Include="AssemblyExtensions.cs" />
     <Compile Include="BLESession.cs" />

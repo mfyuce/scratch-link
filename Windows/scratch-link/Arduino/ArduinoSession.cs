@@ -15,40 +15,25 @@ namespace scratch_link
 {
     internal class ArduinoSession : Session
     {
+        #region constants
         public static string DEFAULT_ARDUINO_FQBN = "arduino:avr:uno";
         public static string SKETCH_FOLDER =ArduinoCLI_API.ARDUINO_CLI_PATH + "sketches/";
         public static string DEV_MODE_SKETCH_FOLDER = SKETCH_FOLDER + "dev_mode/";
-        bool connectedToSimulator = false;
-        string connectedPort = null;
-        private Dictionary<string, string> listOfDeviceIdsAndPorts = new Dictionary<string, string>();
-        static ArduinoSession()
-        {
-            sim = new ArduinoPortSimulator();
-            sim.Start();
+        #endregion
+        #region fields
+        private string connectedPort = null;
+        protected Dictionary<string, string> listOfDeviceIdsAndPorts = new Dictionary<string, string>();
+        private Dictionary<string, dynamic> listOfDevices = new Dictionary<string, dynamic>();
+        private Dictionary<string, SerialPort> serialPorts = new Dictionary<string, SerialPort>();
+        #endregion
+        public ArduinoSession(IWebSocketConnection webSocket, int bufferSize = 4096, int maxMessageSize = 1048576 ) : base(webSocket, bufferSize, maxMessageSize)
+        { 
         }
-        static ArduinoPortSimulator sim = null;
-        private Dictionary<string, dynamic> listOfDevices =
-                                new Dictionary<string, dynamic>();
-        private Dictionary<string, SerialPort> serialPorts =
-                                new Dictionary<string, SerialPort>();
-
-        public ArduinoSession(IWebSocketConnection webSocket, int bufferSize = 4096, int maxMessageSize = 1048576) : base(webSocket, bufferSize, maxMessageSize)
-        {
-        }
-        private async void GetListOfDevices()
+        protected virtual async void GetListOfDevices()
         {
             listOfDeviceIdsAndPorts.Clear();
             await Task.Run(() =>
-            {
-                var peripheralData = new JObject
-                        {
-                            new JProperty("name", new JValue("Pinoo Simulator")),
-                            new JProperty("rssi", null),
-                            new JProperty("peripheralId", new JValue("0"))
-                        };
-                listOfDeviceIdsAndPorts["0"] = "Pinoo Simulator";
-                SendRemoteRequest("didDiscoverPeripheral", peripheralData);
-
+            { 
                 string[] portNames = SerialPort.GetPortNames();// Get real serial ports
                 foreach (string portName in portNames)
                 {
@@ -72,36 +57,36 @@ namespace scratch_link
                     }
                     foreach (ManagementObject obj in listObj)
                     {
-                        //System.Console.WriteLine(obj["Availability'"]);
-                        System.Console.WriteLine(obj["Caption"]);
-                        System.Console.WriteLine(obj["ClassGuid"]);
-                        System.Console.WriteLine(obj["CompatibleID"]);
-                        System.Console.WriteLine(obj["ConfigManagerErrorCode"]);
-                        System.Console.WriteLine(obj["ConfigManagerUserConfig"]);
-                        System.Console.WriteLine(obj["CreationClassName"]);
-                        System.Console.WriteLine(obj["Description"]);
+                        //Console.WriteLine(obj["Availability'"]);
+                        Console.WriteLine(obj["Caption"]);
+                        Console.WriteLine(obj["ClassGuid"]);
+                        Console.WriteLine(obj["CompatibleID"]);
+                        Console.WriteLine(obj["ConfigManagerErrorCode"]);
+                        Console.WriteLine(obj["ConfigManagerUserConfig"]);
+                        Console.WriteLine(obj["CreationClassName"]);
+                        Console.WriteLine(obj["Description"]);
                         String deviceID = (String)obj["DeviceID"];
-                        System.Console.WriteLine(deviceID);
-                        System.Console.WriteLine(obj["ErrorCleared"]);
-                        System.Console.WriteLine(obj["ErrorDescription"]);
-                        System.Console.WriteLine(obj["HardwareID"]);
-                        System.Console.WriteLine(obj["InstallDate"]);
-                        System.Console.WriteLine(obj["LastErrorCode"]);
-                        System.Console.WriteLine(obj["Manufacturer"]);
-                        System.Console.WriteLine(obj["Name"]);
-                        System.Console.WriteLine(obj["PNPClass"]);
-                        System.Console.WriteLine(obj["PNPDeviceID"]);
+                        Console.WriteLine(deviceID);
+                        Console.WriteLine(obj["ErrorCleared"]);
+                        Console.WriteLine(obj["ErrorDescription"]);
+                        Console.WriteLine(obj["HardwareID"]);
+                        Console.WriteLine(obj["InstallDate"]);
+                        Console.WriteLine(obj["LastErrorCode"]);
+                        Console.WriteLine(obj["Manufacturer"]);
+                        Console.WriteLine(obj["Name"]);
+                        Console.WriteLine(obj["PNPClass"]);
+                        Console.WriteLine(obj["PNPDeviceID"]);
                         //uint16 PowerManagementCapabilities[]"]);
                         //boolean PowerManagementSupported"]);
-                        System.Console.WriteLine(obj["Present"]);
-                        System.Console.WriteLine(obj["Service"]);
-                        System.Console.WriteLine(obj["Status"]);
-                        System.Console.WriteLine(obj["StatusInfo"]);
-                        System.Console.WriteLine(obj["SystemCreationClassName"]);
-                        System.Console.WriteLine(obj["SystemName"]);
+                        Console.WriteLine(obj["Present"]);
+                        Console.WriteLine(obj["Service"]);
+                        Console.WriteLine(obj["Status"]);
+                        Console.WriteLine(obj["StatusInfo"]);
+                        Console.WriteLine(obj["SystemCreationClassName"]);
+                        Console.WriteLine(obj["SystemName"]);
                         object captionObj = obj["Caption"]; //This will get you the friendly name.
                         this.listOfDevices.Add(portName, obj);
-                        peripheralData = new JObject
+                        var peripheralData = new JObject
                         {
                             new JProperty("name", new JValue(captionObj)),
                             new JProperty("rssi", null),
@@ -163,46 +148,32 @@ namespace scratch_link
             }
             return ret;
         }
-        private void Write(string pin, string value)
+        protected virtual void Write(string pin, string value)
         {
-            string text = pin + (String.IsNullOrWhiteSpace(value)?"":":" + value);
-            if (connectedToSimulator)
+            string text = pin + (String.IsNullOrWhiteSpace(value) ? "" : ":" + value);
+
+            PortOp((port) =>
             {
-                Serial.printlnFromOtherSide(text);
-            }
-            else
-            {
-                PortOp((port) =>
-                {
-                    port.Write(text);
-                    return "";
-                });
-            }
+                port.Write(text);
+                return "";
+            });
         }
 
-        private String Read(string pin)
+        protected virtual String Read(string pin)
         {
-            if (connectedToSimulator)
+            return PortOp((port) =>
             {
-                return Serial.readStringFromOtherSide();
-            }
-            else
-            {
-                return PortOp((port) =>
+                byte[] toRead = new Byte[100];
+                int numRead = port.Read(toRead, 0, 100);
+                if (numRead > 0)
                 {
-                    byte[] toRead = new Byte[100];
-                    int numRead =  port.Read(toRead,0,100);
-                    if (numRead > 0)
-                    {
 
-                        return System.Text.Encoding.ASCII.GetString(toRead).TrimEnd("\0\r\n".ToCharArray());
-                    }
-                    return null;
-                });
-            }
+                    return System.Text.Encoding.ASCII.GetString(toRead).TrimEnd("\0\r\n".ToCharArray());
+                }
+                return null;
+            });
         }
 
-        
         protected override async Task DidReceiveCall(string method, JObject parameters, Func<JToken, JsonRpcException, Task> completion)
         {
             parameters.TryGetValue("message", out JToken msg);
@@ -214,7 +185,6 @@ namespace scratch_link
                     await completion(null, null);
                     break;
                 case "connect":
-                    //connectedToSimulator = true;
                     connectedPort = listOfDeviceIdsAndPorts[parameters["peripheralId"].ToString()];
                     await completion(null, null);
                     break;
