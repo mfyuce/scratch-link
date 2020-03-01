@@ -83,7 +83,7 @@ namespace scratch_lang
             {"operator_length",  "(({child0}).length())" },
             {"operator_multiply",  "(({child0})*({child1}))" },
             {"operator_divide",  "(({child0})/({child1}))" },
-            {"operator_or",  "(({child0})|+({child1}))" },
+            {"operator_or",  "(({child0})|({child1}))" },
             {"operator_gt", "(({child0})>({child1}))" },
             {"operator_lt", "(({child0})<({child1}))" },
             {"operator_and",  "(({child0})&&({child1}))" },
