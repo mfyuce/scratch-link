@@ -132,6 +132,10 @@
       <Project>{70041932-fac7-40e2-8212-f815191068b0}</Project>
       <Name>Arduino</Name>
     </ProjectReference>
+    <ProjectReference Include="..\scratch-lang\scratch-lang.csproj">
+      <Project>{5fd2c82e-724a-4968-8e10-a5e5eb305376}</Project>
+      <Name>scratch-lang</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\scratchVersion.targets" />
