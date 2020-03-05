@@ -59,7 +59,11 @@ namespace scratch_lang
             {"data_variable",  "({child0})" },
             {"text", "({child0})" },
             {"math_whole_number",  "({child0})" },
+            {"math_positive_number",  "({child0})" },
             {"math_number",  "({child0})" },
+            {"pinoosimulator_digital_write",  "digitalWrite(({child0}), ({child1}))" },
+            {"pinoosimulator_set_pin_mode",  "pinMode(({child0}), ({child1}))" },
+            {"pinoosimulator_pin_equals",  "digitalRead(({child0}))==digitalRead(({child1}))" },
             {"default",  "({children})" }
                 };
         public static Dictionary<string, string> Arduino { get; set; } =
@@ -94,7 +98,14 @@ namespace scratch_lang
             {"data_variable",  "({child0})" },
             {"text", "(\"{child0}\")" },
             {"math_whole_number",  "({child0})" },
+            {"math_positive_number",  "({child0})" },
             {"math_number",  "({child0})" },
+            {"pinoosimulator_digital_write",  "digitalWrite(({child0}), ({child1}));" },
+            {"pinoosimulator_set_pin_mode",  "pinMode(({child0}), ({child1}));" },
+            {"pinoosimulator_pin_equals",  "digitalRead(({child0}))==({child1})" },
+            {"pinoosimulator_menu_digital_pins",  "({child0}))" },
+            {"pinoosimulator_menu_pin_mode",  "({child0}))" },
+            {"pinoosimulator_menu_on_off",  "({child0}))" },
             {"default",  "({children})" }
                 };
         public static Dictionary<string, Dictionary<string, string>> platforms = new Dictionary<string, Dictionary<string, string>> { {"arduino", Arduino },
@@ -131,7 +142,14 @@ namespace scratch_lang
             {"data_variable",new OpcodeParseInfo(typeof(DataVariableASTTreeNode), new string[]{".fields.VARIABLE.value"} ) },
             {"text",new OpcodeParseInfo(typeof(TextASTTreeNode), new string[]{".fields.TEXT.value"} ) },
             {"math_whole_number",new OpcodeParseInfo(typeof(WholeNumberASTTreeNode), new string[]{".fields.NUM.value"} ) },
+            {"math_positive_number",new OpcodeParseInfo(typeof(WholeNumberASTTreeNode), new string[]{".fields.NUM.value"} ) },
             {"math_number",new OpcodeParseInfo(typeof(NumberASTTreeNode), new string[]{".fields.NUM.value"} ) },
+            {"pinoosimulator_digital_write",new OpcodeParseInfo( new string[]{ ".inputs.PIN.block", ".inputs.ON_OFF.block" }) },
+            {"pinoosimulator_set_pin_mode",new OpcodeParseInfo( new string[]{ ".inputs.PIN.block", ".inputs.PIN_MODE.block" } ) },
+            {"pinoosimulator_pin_equals",new OpcodeParseInfo(  new string[]{ ".inputs.PIN.block", ".inputs.ON_OFF.block" } ) }, 
+            {"pinoosimulator_menu_digital_pins",new OpcodeParseInfo(typeof(NumberASTTreeNode), new string[]{ ".fields.digital_pins.value"} ) }, 
+            {"pinoosimulator_menu_pin_mode",new OpcodeParseInfo(typeof(NumberASTTreeNode), new string[]{ ".fields.pin_mode.value"} ) }, 
+            {"pinoosimulator_menu_on_off",new OpcodeParseInfo(typeof(NumberASTTreeNode), new string[]{ ".fields.on_off.value"} ) }, 
             {"default",new OpcodeParseInfo(typeof(ASTreeNode), new string[]{} ) }
         };
         public static OpcodeParseInfo GetOpcodeInfo(string opCode)
