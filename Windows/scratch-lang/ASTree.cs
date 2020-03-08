@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace scratch_lang
 {
-
     public class ASTreeNode
     {
         
@@ -44,7 +43,7 @@ namespace scratch_lang
             }
             return ret;
         }
-        public static ASTreeNode Create(JEnumerable<JToken> blockList, dynamic node)
+        public static ASTreeNode Create(ASTree tree, JEnumerable<JToken> blockList, dynamic node)
         {
             string opCode = node.opcode;
             ASTreeNode treeNode = null;
@@ -58,12 +57,28 @@ namespace scratch_lang
                 var block = ASTree.FindBlock(blockList, blockOrValue);
                 if (block == null)
                 {
-                    treeNode.Children.Add(new TextASTTreeNode() { Value = blockOrValue });
+                    if (child.Contains(".fields.VARIABLE.")){
+                        bool isStr = blockOrValue.StartsWith("str");
+                        if (!tree.Variables.ContainsKey(blockOrValue))
+                        {
+                            blockOrValue = tree.Variables[blockOrValue] = ASTree.ArrangeVariableName(blockOrValue);
+                        }
+                        else
+                        {
+                            blockOrValue = tree.Variables[blockOrValue];
+                        }
+                        if(opCode == "data_variable" && isStr)
+                        {
+                            treeNode.OpCode = "data_variable_str";
+                        }
+                    }
+                    
+                    treeNode.Children.Add(new TextASTTreeNode() { Value = blockOrValue }); 
                 }
                 else
                 {
                     treeNode.Children.Add(new ASTreeNode());
-                    ASTree.Traverse(treeNode.Children.Last(), blockList, block);
+                    ASTree.Traverse(tree, treeNode.Children.Last(), blockList, block);
                 }
             }
             if (info.ChildrenStartFrom > -1)
@@ -74,7 +89,10 @@ namespace scratch_lang
             {
                 treeNode.EndAt = info.ChildrenEndAt;
             }
-            treeNode.OpCode = node.opcode;
+            if (string.IsNullOrWhiteSpace(treeNode.OpCode))
+            {
+                treeNode.OpCode = opCode;
+            }
 
             return treeNode;
         }
@@ -92,27 +110,28 @@ namespace scratch_lang
 
     public class ASTree : ASTreeNode
     {
+        public Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>();
         public static ASTree Traverse(JEnumerable<JToken> blockList, string startingBlockName)
         {
             ASTree tree = new ASTree();
 
-            Traverse(tree, blockList, FindBlock(blockList, startingBlockName));
+            Traverse(tree, tree, blockList, FindBlock(blockList, startingBlockName));
             return tree;
         }
-        public static void Traverse(ASTreeNode parent, JEnumerable<JToken> blockList, dynamic startingBlock)
+        public static void Traverse(ASTree tree, ASTreeNode parent, JEnumerable<JToken> blockList, dynamic startingBlock)
         {
             if (startingBlock == null)
             {
                 return;
             }
-            var curNode = ASTreeNode.Create(blockList, startingBlock);
+            var curNode = ASTreeNode.Create(tree, blockList, startingBlock);
             parent.Children.Add(curNode);
             string next = startingBlock.next;
             if (next == null)
             {
                 return;
             }
-            Traverse(parent, blockList, FindBlock(blockList, next));
+            Traverse(tree, parent, blockList, FindBlock(blockList, next));
         }
         public static JToken FindBlock(JEnumerable<JToken> blockList, string startingBlockName)
         {
@@ -124,6 +143,27 @@ namespace scratch_lang
                 }
             }
             return null;
+        }
+
+        internal static string ArrangeVariableName(string blockOrValue)
+        {
+            string retName = "";
+            foreach (var c in blockOrValue.ToCharArray())
+            {
+                if (Char.IsLetterOrDigit(c) || c.Equals('_'))
+                {
+                    retName += c;
+                }
+                else {
+                    retName += '_';
+                }
+                if(retName.Length > 27)
+                {
+                    break;
+                }
+            }
+            retName = "var_" + retName;
+            return retName;
         }
     }
     public class DataVariableASTTreeNode : ASTreeNode
@@ -145,7 +185,7 @@ namespace scratch_lang
             }
             return Value;
         }
-    }
+    } 
     public class WholeNumberASTTreeNode : ASTreeNode
     {
         public ASTreeNode Value { get { return Children[0]; } }
