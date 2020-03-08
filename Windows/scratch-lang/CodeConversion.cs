@@ -57,6 +57,7 @@ namespace scratch_lang
             {"operator_mathop",  "({child0}({child1}))" },
             {"operator_not",  "!({child0}))" },
             {"data_variable",  "({child0})" },
+            {"data_variable_str",  "({child0})" },
             {"text", "({child0})" },
             {"math_whole_number",  "({child0})" },
             {"math_positive_number",  "({child0})" },
@@ -64,6 +65,7 @@ namespace scratch_lang
             {"pinoosimulator_digital_write",  "digitalWrite(({child0}), ({child1}))" },
             {"pinoosimulator_set_pin_mode",  "pinMode(({child0}), ({child1}))" },
             {"pinoosimulator_pin_equals",  "digitalRead(({child0}))==digitalRead(({child1}))" },
+            {"__variable__",  "var {child0}[];" },
             {"default",  "({children})" }
                 };
         public static Dictionary<string, string> Arduino { get; set; } =
@@ -95,7 +97,8 @@ namespace scratch_lang
             {"operator_round", "(round({child0}))" },
             {"operator_mathop",  "({child0}({child1}))" },
             {"operator_not",  "!({child0}))" },
-            {"data_variable",  "({child0})" },
+            {"data_variable",  "convertToInt({child0})" },
+            {"data_variable_str",  "({child0})" },
             {"text", "(\"{child0}\")" },
             {"math_whole_number",  "({child0})" },
             {"math_positive_number",  "({child0})" },
@@ -106,6 +109,7 @@ namespace scratch_lang
             {"pinoosimulator_menu_digital_pins",  "({child0}))" },
             {"pinoosimulator_menu_pin_mode",  "({child0}))" },
             {"pinoosimulator_menu_on_off",  "({child0}))" },
+            {"__variable__",  "char {child0}[];" },
             {"default",  "({children})" }
                 };
         public static Dictionary<string, Dictionary<string, string>> platforms = new Dictionary<string, Dictionary<string, string>> { {"arduino", Arduino },

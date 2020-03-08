@@ -1,11 +1,11 @@
-using System; 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using scratch_lang;
+using System;
 
 namespace ArduinoTests
 {
-    
+
     [TestClass]
     public class CompileTests
     {
@@ -793,7 +793,7 @@ namespace ArduinoTests
       ""fields"": {
         ""VARIABLE"": {
           ""name"": ""VARIABLE"",
-          ""value"": ""varstr"",
+          ""value"": ""strvar"",
           ""id"": ""la9mmi!(+9HRB(D6UCE|"",
           ""variableType"": """"
         }
@@ -1948,7 +1948,7 @@ namespace ArduinoTests
       ""fields"": {
         ""VARIABLE"": {
           ""name"": ""VARIABLE"",
-          ""value"": ""varstr"",
+          ""value"": ""strvar"",
           ""id"": ""la9mmi!(+9HRB(D6UCE|"",
           ""variableType"": """"
         }
@@ -1994,7 +1994,7 @@ namespace ArduinoTests
       ""fields"": {
         ""VARIABLE"": {
           ""name"": ""VARIABLE"",
-          ""value"": ""varstr"",
+          ""value"": ""strvar"",
           ""id"": ""la9mmi!(+9HRB(D6UCE|"",
           ""variableType"": """"
         }
@@ -2288,7 +2288,7 @@ namespace ArduinoTests
       ""fields"": {
         ""VARIABLE"": {
           ""name"": ""VARIABLE"",
-          ""value"": ""varstr"",
+          ""value"": ""strvar"",
           ""id"": ""la9mmi!(+9HRB(D6UCE|"",
           ""variableType"": """"
         }
