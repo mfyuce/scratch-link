@@ -85,7 +85,7 @@ namespace scratch_lang
             {"operator_add", "(({child0})+({child1}))" },
             {"operator_join",  "(({child0})+({child1}))" },
             {"operator_contains", "(({child0}).indexOf({child1}) > 0)" },
-            {"operator_letter_of", "(({child0}).charAt(({child1})))" },
+            {"operator_letter_of", "(({child0}).charAt({child1})" },
             {"operator_length",  "(({child0}).length())" },
             {"operator_multiply",  "(({child0})*({child1}))" },
             {"operator_divide",  "(({child0})/({child1}))" },
@@ -106,9 +106,9 @@ namespace scratch_lang
             {"pinoosimulator_digital_write",  "digitalWrite(({child0}), ({child1}));" },
             {"pinoosimulator_set_pin_mode",  "pinMode(({child0}), ({child1}));" },
             {"pinoosimulator_pin_equals",  "digitalRead(({child0}))==({child1})" },
-            {"pinoosimulator_menu_digital_pins",  "({child0}))" },
-            {"pinoosimulator_menu_pin_mode",  "({child0}))" },
-            {"pinoosimulator_menu_on_off",  "({child0}))" },
+            {"pinoosimulator_menu_digital_pins",  "({child0})" },
+            {"pinoosimulator_menu_pin_mode",  "({child0})" },
+            {"pinoosimulator_menu_on_off",  "({child0})" },
             {"__variable__",  "char {child0}[];" },
             {"default",  "({children})" }
                 };

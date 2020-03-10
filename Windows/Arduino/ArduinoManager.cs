@@ -1,3 +1,4 @@
+using scratch_lang;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,17 @@ namespace Arduino
 {
     public class ArduinoManager
     {
-        public static String GetDevelopmentModeSketch()
+        public static String GetDevelopmentModeSketch(ArduinoData data)
         {
-            ControllerTemplate page = new ControllerTemplate(new ArduinoData());
+            if(data == null){
+                data = new ArduinoData();
+            }
+            ControllerTemplate page = new ControllerTemplate(data);
+            return page.TransformText();
+        }
+        public static String GetUploadModeSketch(ASTree tree)
+        {
+            RunModeControllerTemplate page = new RunModeControllerTemplate(tree);
             return page.TransformText();
         }
     }
