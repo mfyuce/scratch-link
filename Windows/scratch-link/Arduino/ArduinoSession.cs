@@ -10,6 +10,7 @@ using System.Threading;
 using Arduino;
 using Arduino.Simulator;
 using NppArduino.Domain;
+using scratch_lang;
 
 namespace scratch_link
 {
@@ -197,10 +198,6 @@ namespace scratch_link
                         String command = jcommand.ToString();
                         if (command == "upload_dev_mode")
                         {
-                            //var data = msg["data"];
-                            //var blockList = data["blocks"].Children();
-                            //var startingBlockName = (string)data["startingBlock"];
-                            //dynamic startingBlock = findBlock(blockList, startingBlockName);
 
                             var ret = ArduinoCLI_API.CompileSketch(DEFAULT_ARDUINO_FQBN, DEV_MODE_SKETCH_FOLDER, null);
                             ret += "\r\n\r\n" + ArduinoCLI_API.UploadSketch(connectedPort, DEFAULT_ARDUINO_FQBN, DEV_MODE_SKETCH_FOLDER, null);
@@ -208,28 +205,43 @@ namespace scratch_link
                         }
                         else
                         {
-                            Write(msg["pin"].ToString(), value?.ToString());
-                            if (!String.IsNullOrWhiteSpace(command))
+                            if (command == "upload_run_mode")
                             {
-                                if (command == "digital_read")
+                                var data = msg["data"];
+                                var blockList = data["blocks"].Children();
+                                var startingBlockName = (string)data["startingBlock"];
+
+                                var tree = ASTree.Traverse(blockList, startingBlockName);
+                                RunModeControllerTemplate page = new RunModeControllerTemplate(tree);
+                                //var ret = ArduinoCLI_API.CompileSketch(DEFAULT_ARDUINO_FQBN, DEV_MODE_SKETCH_FOLDER, null);
+                                //ret += "\r\n\r\n" + ArduinoCLI_API.UploadSketch(connectedPort, DEFAULT_ARDUINO_FQBN, DEV_MODE_SKETCH_FOLDER, null);
+                                await completion(new JValue(""), null);
+                            }
+                            else
+                            {
+                                Write(msg["pin"].ToString(), value?.ToString());
+                                if (!String.IsNullOrWhiteSpace(command))
                                 {
-                                    await completion(new JValue(Read(msg["pin"].ToString())), null);
-                                }
-                                else
-                                {
-                                    if (command == "set_pin_mode")
+                                    if (command == "digital_read")
                                     {
                                         await completion(new JValue(Read(msg["pin"].ToString())), null);
                                     }
                                     else
                                     {
-                                        await completion(null, null);
+                                        if (command == "set_pin_mode")
+                                        {
+                                            await completion(new JValue(Read(msg["pin"].ToString())), null);
+                                        }
+                                        else
+                                        {
+                                            await completion(null, null);
+                                        }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                await completion(null, null);
+                                else
+                                {
+                                    await completion(null, null);
+                                }
                             }
                         }
                     }

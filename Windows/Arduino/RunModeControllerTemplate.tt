@@ -1,0 +1,32 @@
+<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="scratch_lang" #>
+
+<# foreach (var item in m_data.Variables) 
+   {
+	   var key = item.Key;
+	   var value = item.Value;
+	   if(key.StartsWith("str")){
+#>
+String <#= (string)value #>;
+<#
+		}else{
+#>
+int <#= (string)value #>;
+<#
+	}
+}
+#>
+
+void setup()   
+{   
+    Serial.begin(115200); //Starts the serial connection with 115200 Buad Rate
+}
+
+void loop()
+{
+     <#= m_data.AsCode(0, CodeConversion.ARDUINO_PLATFORM) #>
+}

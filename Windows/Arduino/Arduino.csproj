@@ -45,6 +45,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RunModeControllerTemplateExtensions.cs" />
+    <Compile Include="RunModeControllerTemplate.cs">
+      <DependentUpon>RunModeControllerTemplate.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="NppArduino\Domain\ArduinoCLI-API.cs" />
     <Compile Include="ArduinoData.cs" />
     <Compile Include="ArduinoManager.cs" />
@@ -68,6 +74,10 @@
     <Compile Include="Simulator\Serial.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="RunModeControllerTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>RunModeControllerTemplate.cs</LastGenOutput>
+    </Content>
     <Content Include="ControllerTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ControllerTemplate.cs</LastGenOutput>
@@ -85,7 +95,12 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\scratch-lang\scratch-lang.csproj">
+      <Project>{5fd2c82e-724a-4968-8e10-a5e5eb305376}</Project>
+      <Name>scratch-lang</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="tools\arduino-cli\README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
