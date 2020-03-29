@@ -9,7 +9,6 @@ using System.Linq;
 using System.Threading;
 using Arduino;
 using Arduino.Simulator;
-using NppArduino.Domain;
 
 namespace scratch_link
 {
