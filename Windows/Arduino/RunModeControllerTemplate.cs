@@ -74,10 +74,40 @@ namespace Arduino
             
             #line default
             #line hidden
-            this.Write("\n\r\nvoid setup()   \r\n{   \r\n    Serial.begin(115200); //Starts the serial connectio" +
-                    "n with 115200 Buad Rate\n}\r\n\r\nvoid loop()\r\n{\r\n     ");
+            this.Write(@"
+
+String convertToStr(int number){
+    return """" + number;
+}
+
+String convertToStr(String str){
+    return str;
+}
+int convertToInt(String str){
+    String ret = """";
+    for(int i=0;i<str.length();i++){
+      char cur = str[i];
+      if(isDigit(cur)){
+        ret += cur;
+      }
+    }
+    return ret.toInt();
+}
+	
+int convertToInt(int number){	
+    return number;	
+}	
+
+void setup()   
+{   
+    Serial.begin(115200); //Starts the serial connection with 115200 Buad Rate
+}
+
+void loop()
+{
+     ");
             
-            #line 17 "C:\git_mehmet\tmp\scratch\scratch-link\Windows\Arduino\RunModeControllerTemplate.tt"
+            #line 37 "C:\git_mehmet\tmp\scratch\scratch-link\Windows\Arduino\RunModeControllerTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(m_data.AsCode(0, CodeConversion.ARDUINO_PLATFORM)));
             
             #line default

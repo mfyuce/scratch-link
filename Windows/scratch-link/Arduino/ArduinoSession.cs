@@ -8,18 +8,15 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
 using Arduino;
-using Arduino.Simulator;
-using NppArduino.Domain;
 using scratch_lang;
+using System.Reflection;
+using CSharp_Arduino_CLI;
 
 namespace scratch_link
 {
     internal class ArduinoSession : Session
     {
         #region constants
-        public static string DEFAULT_ARDUINO_FQBN = "arduino:avr:uno";
-        public static string SKETCH_FOLDER =ArduinoCLI_API.ARDUINO_CLI_PATH + "sketches/";
-        public static string DEV_MODE_SKETCH_FOLDER = SKETCH_FOLDER + "dev_mode/";
         #endregion
         #region fields
         private string connectedPort = null;
@@ -198,9 +195,7 @@ namespace scratch_link
                         String command = jcommand.ToString();
                         if (command == "upload_dev_mode")
                         {
-
-                            var ret = ArduinoCLI_API.CompileSketch(DEFAULT_ARDUINO_FQBN, DEV_MODE_SKETCH_FOLDER, null);
-                            ret += "\r\n\r\n" + ArduinoCLI_API.UploadSketch(connectedPort, DEFAULT_ARDUINO_FQBN, DEV_MODE_SKETCH_FOLDER, null);
+                            var ret = ArduinoManager.UploadDevModeSketch(connectedPort);
                             await completion(new JValue(ret), null);
                         }
                         else
@@ -208,14 +203,10 @@ namespace scratch_link
                             if (command == "upload_run_mode")
                             {
                                 var data = msg["data"];
-                                var blockList = data["blocks"].Children();
+                                JEnumerable<JToken> blockList = data["blocks"].Children();
                                 var startingBlockName = (string)data["startingBlock"];
-
-                                var tree = ASTree.Traverse(blockList, startingBlockName);
-                                RunModeControllerTemplate page = new RunModeControllerTemplate(tree);
-                                //var ret = ArduinoCLI_API.CompileSketch(DEFAULT_ARDUINO_FQBN, DEV_MODE_SKETCH_FOLDER, null);
-                                //ret += "\r\n\r\n" + ArduinoCLI_API.UploadSketch(connectedPort, DEFAULT_ARDUINO_FQBN, DEV_MODE_SKETCH_FOLDER, null);
-                                await completion(new JValue(""), null);
+                                var ret = ArduinoManager.UploadRunModeSketch(connectedPort, startingBlockName, blockList);
+                                await completion(new JValue(ret), null);
                             }
                             else
                             {
