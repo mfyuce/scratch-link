@@ -38,13 +38,13 @@ namespace scratch_link
             });
         }
          
-        private void Write(string pin, string value)
+        protected override void Write(string pin, string value)
         {
             string text = pin + (String.IsNullOrWhiteSpace(value)?"":":" + value);
             Serial.printlnFromOtherSide(text);
         }
 
-        private String Read(string pin)
+        protected override String Read(string pin)
         {
             return Serial.readStringFromOtherSide();
         }
