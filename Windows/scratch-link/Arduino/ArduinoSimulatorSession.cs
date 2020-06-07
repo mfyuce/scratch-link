@@ -13,7 +13,7 @@ using Arduino.Simulator;
 namespace scratch_link
 {
     internal class ArduinoSimulatorSession : ArduinoSession
-    { 
+    {
         #region fields
         static ArduinoPortSimulator sim = null;
         #endregion
@@ -23,7 +23,7 @@ namespace scratch_link
             sim.Start();
         }
         protected override async void GetListOfDevices()
-        { 
+        {
             listOfDeviceIdsAndPorts.Clear();
             await Task.Run(() =>
             {
@@ -37,7 +37,7 @@ namespace scratch_link
                 SendRemoteRequest("didDiscoverPeripheral", peripheralData);
             });
         }
-         
+
         protected override void Write(string pin, string value)
         {
             string text = pin + (String.IsNullOrWhiteSpace(value)?"":":" + value);
@@ -49,5 +49,5 @@ namespace scratch_link
             return Serial.readStringFromOtherSide();
         }
     }
-    
+
 }
