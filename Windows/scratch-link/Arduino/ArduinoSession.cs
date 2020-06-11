@@ -100,12 +100,11 @@ namespace scratch_link
         private String PortOp(Func<SerialPort, String> cmd)
         {
             SerialPort _serialPort = null;
-            var port = listOfDevices.Keys.First();
             string ret = null;
-            if (!serialPorts.ContainsKey(port))
+            if (!serialPorts.ContainsKey(connectedPort))
             {
-                _serialPort = serialPorts[port] = new SerialPort();
-                _serialPort.PortName = port;
+                _serialPort = serialPorts[connectedPort] = new SerialPort();
+                _serialPort.PortName = connectedPort;
                 _serialPort.BaudRate = 115200;
                 _serialPort.WriteBufferSize = 2000;
                 _serialPort.WriteTimeout = 2000;
@@ -117,7 +116,7 @@ namespace scratch_link
             }
             else
             {
-                _serialPort = serialPorts[port];
+                _serialPort = serialPorts[connectedPort];
             }
             try
             {

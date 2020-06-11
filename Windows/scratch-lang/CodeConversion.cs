@@ -65,6 +65,9 @@ namespace scratch_lang
             {"pinoosimulator_digital_write",  "digitalWrite(({child0}), ({child1}))" },
             {"pinoosimulator_set_pin_mode",  "pinMode(({child0}), ({child1}))" },
             {"pinoosimulator_pin_equals",  "digitalRead(({child0}))==digitalRead(({child1}))" },
+            {"pinoo_digital_write",  "digitalWrite(({child0}), ({child1}))" },
+            {"pinoo_set_pin_mode",  "pinMode(({child0}), ({child1}))" },
+            {"pinoo_pin_equals",  "digitalRead(({child0}))==digitalRead(({child1}))" },
             {"__variable__",  "var {child0}[];" },
             {"default",  "({children})" }
                 };
@@ -109,6 +112,12 @@ namespace scratch_lang
             {"pinoosimulator_menu_digital_pins",  "({child0})" },
             {"pinoosimulator_menu_pin_mode",  "({child0})" },
             {"pinoosimulator_menu_on_off",  "({child0})" },
+            {"pinoo_digital_write",  "digitalWrite(({child0}), ({child1}));" },
+            {"pinoo_set_pin_mode",  "pinMode(({child0}), ({child1}));" },
+            {"pinoo_pin_equals",  "digitalRead(({child0}))==({child1})" },
+            {"pinoo_menu_digital_pins",  "({child0})" },
+            {"pinoo_menu_pin_mode",  "({child0})" },
+            {"pinoo_menu_on_off",  "({child0})" },
             {"__variable__",  "char {child0}[];" },
             {"default",  "({children})" }
                 };
@@ -154,6 +163,12 @@ namespace scratch_lang
             {"pinoosimulator_menu_digital_pins",new OpcodeParseInfo(typeof(NumberASTTreeNode), new string[]{ ".fields.digital_pins.value"} ) }, 
             {"pinoosimulator_menu_pin_mode",new OpcodeParseInfo(typeof(NumberASTTreeNode), new string[]{ ".fields.pin_mode.value"} ) }, 
             {"pinoosimulator_menu_on_off",new OpcodeParseInfo(typeof(NumberASTTreeNode), new string[]{ ".fields.on_off.value"} ) }, 
+            {"pinoo_digital_write",new OpcodeParseInfo( new string[]{ ".inputs.PIN.block", ".inputs.ON_OFF.block" }) },
+            {"pinoo_set_pin_mode",new OpcodeParseInfo( new string[]{ ".inputs.PIN.block", ".inputs.PIN_MODE.block" } ) },
+            {"pinoo_pin_equals",new OpcodeParseInfo(  new string[]{ ".inputs.PIN.block", ".inputs.ON_OFF.block" } ) }, 
+            {"pinoo_menu_digital_pins",new OpcodeParseInfo(typeof(NumberASTTreeNode), new string[]{ ".fields.digital_pins.value"} ) }, 
+            {"pinoo_menu_pin_mode",new OpcodeParseInfo(typeof(NumberASTTreeNode), new string[]{ ".fields.pin_mode.value"} ) }, 
+            {"pinoo_menu_on_off",new OpcodeParseInfo(typeof(NumberASTTreeNode), new string[]{ ".fields.on_off.value"} ) }, 
             {"default",new OpcodeParseInfo(typeof(ASTreeNode), new string[]{} ) }
         };
         public static OpcodeParseInfo GetOpcodeInfo(string opCode)
